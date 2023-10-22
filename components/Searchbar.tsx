@@ -8,7 +8,7 @@ const isValidAmazonProductURL = (url: string) => {
 
     // Check if hostname contains amazon.com or amazon.ca
 
-    if  (hostname.includes('amazon.')
+    if (hostname.includes('amazon.')
       || hostname.endsWith('amazon')
     ) {
       return true;
@@ -22,10 +22,22 @@ const isValidAmazonProductURL = (url: string) => {
 
 const Searchbar = () => {
   const [searchPrompt, setSearchPrompt] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const isValidLink = isValidAmazonProductURL(searchPrompt);
+
+    if (!isValidLink) return alert("Please provide a valid Amazon link");
+
+    try {
+      setIsLoading(true);
+    } catch (error) {
+        console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -36,8 +48,9 @@ const Searchbar = () => {
         onChange={(e) => setSearchPrompt(e.target.value)}
         placeholder="Enter product link"
         className="searchbar-input"
+        disabled={searchPrompt === ''}
       />
-      <button type="submit" className="searcbar-btn">Search</button>
+      <button type="submit" className="searcbar-btn">{isLoading ? 'Searching...' : 'Search'}</button>
     </form>
   )
 }
